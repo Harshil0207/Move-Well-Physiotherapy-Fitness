@@ -7,4 +7,8 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [ tailwindcss(),react()],
+    build: {
+    outDir: 'dist', // output directory
+    sourcemap: true, // generate source maps
+  }
 })

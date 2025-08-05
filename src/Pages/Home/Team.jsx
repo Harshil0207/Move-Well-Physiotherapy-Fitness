@@ -160,7 +160,7 @@ function Team() {
             </span>
           </h2>
           <div className="team-subtitle ">
-            <TextType
+            <TextType 
               text={[
                 "Dedicated professionals committed to your recovery journey",
                 "Experienced specialists in every aspect of physiotherapy",
