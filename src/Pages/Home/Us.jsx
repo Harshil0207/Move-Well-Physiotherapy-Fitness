@@ -371,7 +371,9 @@ function Us() {
               હજારો સંતુષ્ટ દર્દીઓ સાથે જોડાઓ જેઓએ મૂવવેલની નિષ્ણાત ફિઝિયોથેરાપી સારવારથી તેમના જીવનને બદલી નાખ્યું છે.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn-responsive bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl sm:rounded-2xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+              <button onClick={() => {
+                window.location.href = '/contact-us'
+              }} className="btn-responsive bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold rounded-xl sm:rounded-2xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
                 સલાહ માટે બુક કરો
               </button>
               <button className="btn-responsive border-2 border-blue-500 text-blue-400 font-semibold rounded-xl sm:rounded-2xl hover:bg-blue-500 hover:text-white transform hover:-translate-y-1 transition-all duration-300">
