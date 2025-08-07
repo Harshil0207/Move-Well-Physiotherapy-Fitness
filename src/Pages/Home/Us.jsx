@@ -1,9 +1,45 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+// Remove gsap and ScrollTrigger imports and logic
 
-// Register ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
+// Add CSS for entrance, floating, parallax, and counter animations
+const usStyle = `
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(50px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .us-animate {
+    animation: fadeInUp 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes float {
+    0% { transform: translateY(0) scale(1) rotate(0deg); }
+    50% { transform: translateY(-20px) scale(1.03) rotate(3deg); }
+    100% { transform: translateY(0) scale(1) rotate(0deg); }
+  }
+  .float-anim {
+    animation: float 6s ease-in-out infinite;
+  }
+  .float-anim-alt {
+    animation: float 7s ease-in-out infinite reverse;
+  }
+  .parallax-bg {
+    animation: fadeInUp 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .feature-animate {
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .stat-animate {
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .testimonial-animate {
+    animation: fadeInUp 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+`;
+
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = usStyle;
+  document.head.appendChild(styleSheet);
+}
 
 function Us() {
   const [activeFeature, setActiveFeature] = useState(0);
@@ -13,12 +49,9 @@ function Us() {
     experience: 0,
     support: 0
   });
-  const containerRef = useRef(null);
   const featuresRef = useRef([]);
   const statsRef = useRef([]);
   const testimonialRef = useRef(null);
-  const backgroundRef = useRef(null);
-  const floatingElementsRef = useRef([]);
 
   const features = [
     {
@@ -74,207 +107,58 @@ function Us() {
     }
   ];
 
+  // Counter animation using setInterval (no GSAP)
   useEffect(() => {
-    // Background animation setup
-    const backgroundElement = backgroundRef.current;
-    const floatingElements = floatingElementsRef.current;
-
-    // Parallax background effect
-    gsap.to(backgroundElement, {
-      yPercent: -50,
-      ease: "none",
-      scrollTrigger: {
-        trigger: backgroundElement,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1
-      }
-    });
-
-    // Floating elements animation
-    floatingElements.forEach((element, index) => {
-      if (element) {
-        // Continuous floating animation
-        gsap.to(element, {
-          y: index % 2 === 0 ? -30 : 30,
-          x: index % 3 === 0 ? -20 : 20,
-          rotation: index % 2 === 0 ? 360 : -360,
-          duration: 8 + index * 2,
-          ease: "none",
-          repeat: -1,
-          yoyo: true
-        });
-
-        // Parallax effect on scroll
-        gsap.to(element, {
-          y: index % 2 === 0 ? -100 : 100,
-          x: index % 3 === 0 ? -50 : 50,
-          ease: "none",
-          scrollTrigger: {
-            trigger: element,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1
-          }
-        });
-      }
-    });
-
-    // Animate features on scroll
-    featuresRef.current.forEach((feature, index) => {
-      gsap.fromTo(feature,
-        {
-          opacity: 0,
-          y: 50,
-          scale: 0.9
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          delay: index * 0.2,
-          ease: "back.out(1.7)",
-          scrollTrigger: {
-            trigger: feature,
-            start: "top 85%",
-            end: "bottom 15%",
-            toggleActions: "play none none reverse"
-          }
+    const intervals = stats.map((stat, index) => {
+      let current = 0;
+      const target = stat.number;
+      const duration = 2000; // 2 seconds
+      const steps = 60;
+      const increment = target / steps;
+      return setInterval(() => {
+        current += increment;
+        setCounters(prev => ({
+          ...prev,
+          [Object.keys(prev)[index]]: Math.min(Math.floor(current), target)
+        }));
+        if (current >= target) {
+          clearInterval(intervals[index]);
+          setCounters(prev => ({
+            ...prev,
+            [Object.keys(prev)[index]]: target
+          }));
         }
-      );
+      }, duration / steps);
     });
-
-    // Animate stats with counter
-    statsRef.current.forEach((stat, index) => {
-      gsap.fromTo(stat,
-        {
-          opacity: 0,
-          y: 30,
-          scale: 0.8
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.6,
-          delay: index * 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: stat,
-            start: "top 90%",
-            end: "bottom 10%",
-            toggleActions: "play none none reverse",
-            onEnter: () => {
-              // Start counter animation when element enters viewport
-              const targetNumber = stats[index].number;
-              const duration = 2; // 2 seconds
-              const steps = 60; // 60 steps for smooth animation
-              const increment = targetNumber / steps;
-              let currentStep = 0;
-              
-              const counterInterval = setInterval(() => {
-                currentStep++;
-                const currentValue = Math.floor(increment * currentStep);
-                
-                setCounters(prev => ({
-                  ...prev,
-                  [Object.keys(prev)[index]]: Math.min(currentValue, targetNumber)
-                }));
-                
-                if (currentStep >= steps) {
-                  clearInterval(counterInterval);
-                  setCounters(prev => ({
-                    ...prev,
-                    [Object.keys(prev)[index]]: targetNumber
-                  }));
-                }
-              }, duration * 1000 / steps);
-            }
-          }
-        }
-      );
-    });
-
-    // Animate testimonial
-    if (testimonialRef.current) {
-      gsap.fromTo(testimonialRef.current,
-        {
-          opacity: 0,
-          y: 60,
-          rotationY: 15
-        },
-        {
-          opacity: 1,
-          y: 0,
-          rotationY: 0,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: testimonialRef.current,
-            start: "top 80%",
-            end: "bottom 20%",
-            toggleActions: "play none none reverse"
-          }
-        }
-      );
-    }
-
     // Auto-rotate features
-    const interval = setInterval(() => {
+    const featureInterval = setInterval(() => {
       setActiveFeature((prev) => (prev + 1) % features.length);
     }, 3000);
-
-    return () => clearInterval(interval);
+    return () => {
+      intervals.forEach(clearInterval);
+      clearInterval(featureInterval);
+    };
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-black to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-black to-slate-900 relative overflow-hidden us-animate">
       {/* Animated background elements */}
-      <div ref={backgroundRef} className="absolute inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden parallax-bg">
         {/* Base gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-black to-slate-900"></div>
-        
         {/* Animated floating elements */}
-        <div 
-          ref={el => floatingElementsRef.current[0] = el}
-          className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-60"
-        ></div>
-        <div 
-          ref={el => floatingElementsRef.current[1] = el}
-          className="absolute top-40 right-20 w-80 h-80 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-50"
-        ></div>
-        <div 
-          ref={el => floatingElementsRef.current[2] = el}
-          className="absolute bottom-20 left-1/4 w-72 h-72 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-40"
-        ></div>
-        <div 
-          ref={el => floatingElementsRef.current[3] = el}
-          className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30"
-        ></div>
-        <div 
-          ref={el => floatingElementsRef.current[4] = el}
-          className="absolute bottom-1/3 left-1/2 w-56 h-56 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-35"
-        ></div>
-        
+        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-60 float-anim"></div>
+        <div className="absolute top-40 right-20 w-80 h-80 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-50 float-anim-alt"></div>
+        <div className="absolute bottom-20 left-1/4 w-72 h-72 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-40 float-anim"></div>
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 float-anim-alt"></div>
+        <div className="absolute bottom-1/3 left-1/2 w-56 h-56 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-35 float-anim"></div>
         {/* Additional smaller floating elements */}
-        <div 
-          ref={el => floatingElementsRef.current[5] = el}
-          className="absolute top-1/4 left-1/3 w-32 h-32 bg-gradient-to-r from-yellow-500/15 to-orange-500/15 rounded-full mix-blend-multiply filter blur-2xl opacity-25"
-        ></div>
-        <div 
-          ref={el => floatingElementsRef.current[6] = el}
-          className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-to-r from-teal-500/15 to-cyan-500/15 rounded-full mix-blend-multiply filter blur-2xl opacity-20"
-        ></div>
-        <div 
-          ref={el => floatingElementsRef.current[7] = el}
-          className="absolute top-3/4 left-1/6 w-24 h-24 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-15"
-        ></div>
+        <div className="absolute top-1/4 left-1/3 w-32 h-32 bg-gradient-to-r from-yellow-500/15 to-orange-500/15 rounded-full mix-blend-multiply filter blur-2xl opacity-25 float-anim-alt"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-to-r from-teal-500/15 to-cyan-500/15 rounded-full mix-blend-multiply filter blur-2xl opacity-20 float-anim"></div>
+        <div className="absolute top-3/4 left-1/6 w-24 h-24 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-15 float-anim-alt"></div>
       </div>
-
       {/* Grid pattern overlay */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.02%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
-
       <div className="relative z-10 container-responsive section-padding">
         {/* Hero Section */}
         <div className="text-center section-margin">
@@ -287,14 +171,13 @@ function Us() {
             તફાવત અનુભવો જે તમને તમારા પ્રિય કાર્યો કરવા પાછા લાવે છે.
           </p>
         </div>
-
         {/* Features Grid */}
         <div className="grid-responsive section-margin">
           {features.map((feature, index) => (
             <div
               key={index}
               ref={el => featuresRef.current[index] = el}
-              className={`group relative card-responsive bg-gradient-to-br ${feature.color}/20 border border-white/10 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer`}
+              className={`group relative card-responsive bg-gradient-to-br ${feature.color}/20 border border-white/10 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer feature-animate`}
               onClick={() => setActiveFeature(index)}
             >
               <div className="text-3xl sm:text-4xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
@@ -310,14 +193,13 @@ function Us() {
             </div>
           ))}
         </div>
-
         {/* Stats Section */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 section-margin">
           {stats.map((stat, index) => (
             <div
               key={index}
               ref={el => statsRef.current[index] = el}
-              className="group text-center p-4 sm:p-6 bg-gradient-to-br from-blue-600/20 to-cyan-600/20 rounded-xl sm:rounded-2xl border border-blue-500/30 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2"
+              className="group text-center p-4 sm:p-6 bg-gradient-to-br from-blue-600/20 to-cyan-600/20 rounded-xl sm:rounded-2xl border border-blue-500/30 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 stat-animate"
             >
               <div className="text-xl sm:text-2xl mb-2 group-hover:scale-110 transition-transform duration-300">
                 {stat.icon}
@@ -332,9 +214,8 @@ function Us() {
             </div>
           ))}
         </div>
-
         {/* Testimonials Section */}
-        <div ref={testimonialRef} className="section-margin">
+        <div ref={testimonialRef} className="section-margin testimonial-animate">
           <h2 className="text-responsive-h2 font-bold text-center text-white mb-8 sm:mb-12">
             અમારા દર્દીઓ શું કહે છે
           </h2>
@@ -360,7 +241,6 @@ function Us() {
             ))}
           </div>
         </div>
-
         {/* CTA Section */}
         <div className="text-center">
           <div className="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 border border-blue-500/30 backdrop-blur-sm">

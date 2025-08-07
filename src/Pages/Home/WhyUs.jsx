@@ -1,10 +1,54 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import BlurText from '../../Components/utils/BlurText';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+// Remove gsap and ScrollTrigger imports and logic
 
-// Register ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
+// Add CSS for entrance, floating, and hover animations
+const whyUsStyle = `
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(50px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .whyus-animate {
+    animation: fadeInUp 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @keyframes float {
+    0% { transform: translateY(0) scale(1) rotate(0deg); }
+    50% { transform: translateY(-15px) scale(1.05) rotate(3deg); }
+    100% { transform: translateY(0) scale(1) rotate(0deg); }
+  }
+  .float-anim {
+    animation: float 6s ease-in-out infinite;
+  }
+  .float-anim-alt {
+    animation: float 7s ease-in-out infinite reverse;
+  }
+  .stat-card, .text-content {
+    animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .whyus-img-container {
+    transition: box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  .whyus-img-container:hover {
+    box-shadow: 0 35px 60px -15px rgba(59, 130, 246, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  }
+  .whyus-dot {
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    transform: scale(1) translateY(0) rotate(0deg);
+  }
+  .whyus-img-container:hover .whyus-dot-1 {
+    transform: scale(1.8) translateY(-15px) rotate(360deg);
+  }
+  .whyus-img-container:hover .whyus-dot-2 {
+    transform: scale(1.6) translateY(15px) rotate(-360deg);
+  }
+`;
+
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = whyUsStyle;
+  document.head.appendChild(styleSheet);
+}
 
 function WhyUs() {
   const imageRef = useRef(null);
@@ -16,198 +60,6 @@ function WhyUs() {
     console.log('Animation completed!');
   };
 
-  useEffect(() => {
-    // Text content animation on scroll
-    const textElements = document.querySelectorAll('.text-content');
-    gsap.fromTo(textElements,
-      {
-        opacity: 0,
-        y: 50,
-        scale: 0.95
-      },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: textElements[0],
-          start: "top 80%",
-          end: "bottom 20%",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
-
-    // Stats animation on scroll
-    const statElements = document.querySelectorAll('.stat-card');
-    gsap.fromTo(statElements,
-      {
-        opacity: 0,
-        y: 30,
-        scale: 0.9
-      },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: statElements[0],
-          start: "top 85%",
-          end: "bottom 15%",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
-
-
-
-    // Floating elements animation
-    const floatingElements = [floatingDot1Ref.current, floatingDot2Ref.current];
-    floatingElements.forEach((element, index) => {
-      if (element) {
-        gsap.fromTo(element,
-          {
-            opacity: 0,
-            scale: 0,
-            y: 30,
-            rotation: index % 2 === 0 ? -180 : 180
-          },
-          {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            rotation: 0,
-            duration: 1,
-            delay: 0.5 + (index * 0.2),
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-              trigger: imageContainerRef.current,
-              start: "top 80%",
-              end: "bottom 20%",
-              toggleActions: "play none none reverse"
-            }
-          }
-        );
-      }
-    });
-
-    // Enhanced hover animations
-    const imageElement = imageRef.current;
-    const containerElement = imageContainerRef.current;
-    const dot1Element = floatingDot1Ref.current;
-    const dot2Element = floatingDot2Ref.current;
-    
-    const handleMouseEnter = () => {
-      // Container shadow enhancement with glow
-      gsap.to(containerElement, {
-        boxShadow: "0 35px 60px -15px rgba(59, 130, 246, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.4)",
-        duration: 0.6,
-        ease: "power2.out"
-      });
-
-      // Enhanced floating dots animation
-      gsap.to(dot1Element, {
-        scale: 1.8,
-        y: -15,
-        rotation: 360,
-        duration: 0.5,
-        ease: "back.out(1.7)"
-      });
-
-      gsap.to(dot2Element, {
-        scale: 1.6,
-        y: 15,
-        rotation: -360,
-        duration: 0.5,
-        ease: "back.out(1.7)"
-      });
-    };
-
-    const handleMouseLeave = () => {
-      // Reset container shadow
-      gsap.to(containerElement, {
-        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-        duration: 0.6,
-        ease: "power2.out"
-      });
-
-      // Reset floating dots with rotation
-      gsap.to(dot1Element, {
-        scale: 1,
-        y: 0,
-        rotation: 0,
-        duration: 0.5,
-        ease: "power2.out"
-      });
-
-      gsap.to(dot2Element, {
-        scale: 1,
-        y: 0,
-        rotation: 0,
-        duration: 0.5,
-        ease: "power2.out"
-      });
-    };
-
-    // Enhanced mouse move effect for floating elements only
-    const handleMouseMove = (e) => {
-      const rect = imageElement.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      
-      // Floating elements follow mouse
-      gsap.to(dot1Element, {
-        x: x * 20,
-        y: y * 20,
-        duration: 0.3,
-        ease: "power2.out"
-      });
-
-      gsap.to(dot2Element, {
-        x: -x * 15,
-        y: -y * 15,
-        duration: 0.3,
-        ease: "power2.out"
-      });
-    };
-
-    const handleMouseLeaveMove = () => {
-      // Reset floating elements
-      gsap.to(dot1Element, {
-        x: 0,
-        y: 0,
-        duration: 0.5,
-        ease: "power2.out"
-      });
-
-      gsap.to(dot2Element, {
-        x: 0,
-        y: 0,
-        duration: 0.5,
-        ease: "power2.out"
-      });
-    };
-
-    imageElement.addEventListener('mouseenter', handleMouseEnter);
-    imageElement.addEventListener('mouseleave', handleMouseLeave);
-    imageElement.addEventListener('mousemove', handleMouseMove);
-    imageElement.addEventListener('mouseleave', handleMouseLeaveMove);
-
-    // Cleanup
-    return () => {
-      imageElement.removeEventListener('mouseenter', handleMouseEnter);
-      imageElement.removeEventListener('mouseleave', handleMouseLeave);
-      imageElement.removeEventListener('mousemove', handleMouseMove);
-      imageElement.removeEventListener('mouseleave', handleMouseLeaveMove);
-    };
-  }, []);
-
   const textContent = [
     "શા માટે તમારે ફિઝિયોથેરાપિસ્ટની મુલાકાત લેવાની જરૂર છે",
     "95 ટકા ખુશ ગ્રાહકોએ જણાવ્યું હતું કે મૂવવેલથી તેઓ અપેક્ષા કરતા વધુ ઝડપથી સાજા થઈ જાય છે. મૂવવેલમાં, અમે તમને જે રાહત આપવાને લાયક છો તે પૂરી પાડીએ છીએ અને તમને ગમતી વસ્તુઓ કરવા માટે તમને પાછા લાવીએ છીએ.",
@@ -216,17 +68,15 @@ function WhyUs() {
   ];
 
   return (
-    <div className="py-24  bg-gradient-to-br from-slate-900 via-black to-slate-900  relative overflow-hidden">
+    <div className="py-24 bg-gradient-to-br from-slate-900 via-black to-slate-900 relative overflow-hidden whyus-animate">
       {/* Animated background elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-        <div className="absolute top-40 right-10 w-72 h-72 bg-cyan-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{animationDelay: '2s'}}></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" style={{animationDelay: '4s'}}></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse float-anim"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-cyan-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse float-anim-alt" style={{animationDelay: '2s'}}></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-purple-500/10 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse float-anim" style={{animationDelay: '4s'}}></div>
       </div>
-
       {/* Grid pattern overlay */}
       <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.02%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
-    
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         {/* Page Title */}
         <div className="text-center mb-20">
@@ -245,7 +95,6 @@ function WhyUs() {
             Professional physiotherapy services with proven results and personalized care
           </p>
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Left Side - Text Content */}
           <div className="space-y-8">
@@ -265,7 +114,6 @@ function WhyUs() {
                 </div>
               </div>
             </div>
-            
             {/* Stats Section */}
             <div className="grid grid-cols-2 gap-6 mt-8">
               <div className="stat-card group text-center p-6 bg-gradient-to-br from-blue-600/20 to-cyan-600/20 rounded-2xl border border-blue-500/30 backdrop-blur-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
@@ -280,9 +128,8 @@ function WhyUs() {
               </div>
             </div>
           </div>
-          
           {/* Right Side - Image */}
-          <div ref={imageContainerRef} className="flex justify-center lg:justify-end">
+          <div ref={imageContainerRef} className="flex justify-center lg:justify-end whyus-img-container group">
             <div className="relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-300 group">
               <img 
                 ref={imageRef}
@@ -297,29 +144,26 @@ function WhyUs() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-3xl"></div>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-transparent to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
               {/* Enhanced floating elements */}
               <div 
                 ref={floatingDot1Ref}
-                className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm rounded-full p-4 shadow-xl transition-all duration-300 group-hover:scale-110"
+                className="absolute top-6 right-6 bg-white/95 backdrop-blur-sm rounded-full p-4 shadow-xl whyus-dot whyus-dot-1"
               >
                 <div className="w-4 h-4 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full animate-pulse shadow-lg"></div>
               </div>
               <div 
                 ref={floatingDot2Ref}
-                className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm rounded-full p-3 shadow-xl transition-all duration-300 group-hover:scale-110"
+                className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm rounded-full p-3 shadow-xl whyus-dot whyus-dot-2"
               >
                 <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full shadow-lg"></div>
               </div>
-              
               {/* Additional floating elements */}
-              <div className="absolute top-1/2 left-4 bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-lg transition-all duration-300 group-hover:scale-110">
+              <div className="absolute top-1/2 left-4 bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-lg transition-all duration-300 group-hover:scale-110 float-anim">
                 <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
               </div>
-              <div className="absolute top-1/3 right-4 bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-lg transition-all duration-300 group-hover:scale-110">
+              <div className="absolute top-1/3 right-4 bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-lg transition-all duration-300 group-hover:scale-110 float-anim-alt">
                 <div className="w-2 h-2 bg-yellow-500 rounded-full animate-ping"></div>
               </div>
-              
               {/* Glow effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
             </div>

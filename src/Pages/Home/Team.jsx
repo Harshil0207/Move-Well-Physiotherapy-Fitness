@@ -12,7 +12,7 @@ function Team() {
   const cardsRef = useRef([])
 
   const teamMembers = [
-    {
+    { 
       id: 1,
       name: "Dr. Sarah Johnson",
       position: "Lead Physiotherapist",
@@ -160,21 +160,7 @@ function Team() {
             </span>
           </h2>
           <div className="team-subtitle ">
-            <TextType 
-              text={[
-                "Dedicated professionals committed to your recovery journey",
-                "Experienced specialists in every aspect of physiotherapy",
-                "Compassionate care with cutting-edge treatment approaches"
-              ]}
-              as="p"
-              className="text-xl md:text-2xl text-white max-w-4xl mx-auto leading-relaxed"
-              typingSpeed={50}
-              pauseDuration={3000}
-              loop={true}
-              showCursor={true}
-              cursorCharacter="|"
-              cursorClassName="text-blue-400"
-            />
+           
           </div>
         </div>
 

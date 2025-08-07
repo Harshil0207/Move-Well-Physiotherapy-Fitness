@@ -23,7 +23,7 @@
 /* Custom Docade font utility class */
 @layer utilities {
   .font-docade {
-    font-family: 'Docade', sans-serif;
+    font-family: 'Docade' , sans-serif;
   }
 }
 

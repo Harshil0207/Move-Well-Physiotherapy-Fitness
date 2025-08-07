@@ -100,12 +100,12 @@ function Navbar() {
   return (
           <nav 
         ref={navbarRef}
-        className={`absolute top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out backdrop-blur-md shadow-xl ${
+        className={`absolute top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out backdrop-blur-md ${
           isNavbarVisible ? 'translate-y-0' : '-translate-y-full'
         } ${
           !isScrolled 
-            ? 'bg-white/10 backdrop-blur-md shadow-lg' 
-            : 'bg-white/95 backdrop-blur-sm shadow-sm'
+            ? 'bg-white/10 backdrop-blur-md' 
+            : 'bg-white/95 backdrop-blur-sm'
         }`}
       >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -115,36 +115,13 @@ function Navbar() {
           <div 
             className="flex items-center space-x-2 sm:space-x-3 cursor-pointer group"
             onClick={() => handleNavigation('/')}
+            
           >
-            <div className="relative">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 transform group-hover:scale-105">
-                <div className="w-5 h-6 sm:w-6 sm:h-8 lg:w-7 lg:h-9 relative">
-                  {/* Human figure */}
-                  <div className="w-1.5 h-3 sm:w-2 sm:h-4 lg:w-2.5 lg:h-5 bg-white rounded-full mx-auto"></div>
-                  {/* Arms */}
-                  <div className="absolute top-1 left-0 w-2 h-0.5 sm:w-3 sm:h-0.5 bg-white transform -rotate-45"></div>
-                  <div className="absolute top-1 right-0 w-2 h-0.5 sm:w-3 sm:h-0.5 bg-white transform rotate-45"></div>
-                  {/* Legs */}
-                  <div className="absolute bottom-0 left-1 w-1 h-1.5 sm:w-1.5 sm:h-2 bg-white transform rotate-12"></div>
-                  <div className="absolute bottom-0 right-1 w-1 h-1.5 sm:w-1.5 sm:h-2 bg-white transform -rotate-12"></div>
-                </div>
-              </div>
-              {/* Pulse effect */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400 to-teal-400 animate-ping opacity-20"></div>
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-                Move Well
-              </h1>
-              <p className="text-xs lg:text-sm text-gray-100 font-semibold">
-                Physiotherapy & Fitness
-              </p>
-            </div>
-            <div className="sm:hidden">
-              <h1 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-                Move Well
-              </h1>
-            </div>
+            <img 
+              src="https://movewell.in/images/logo.png" 
+              alt="Move Well Logo" 
+              className="h-28 w-58 sm:h-20 sm:w-58 transition-transform duration-300 group-hover:scale-110"
+            />
           </div>
 
           {/* Desktop Navigation */}
@@ -156,7 +133,7 @@ function Navbar() {
                 className={`relative font-semibold transition-all text-lg lg:text-xl duration-300 group ${
                   location.pathname === link.path
                     ? 'text-blue-600'
-                    : 'text-gray-100 hover:text-blue-600'
+                    : 'text-gray-800/90 hover:text-blue-600'
                 }`}
               >
                 {link.label}

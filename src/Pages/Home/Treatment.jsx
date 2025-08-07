@@ -1,10 +1,98 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Register ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
+// Add CSS for smooth, light animations optimized for mobile
+const treatmentStyle = `
+  @keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUpMobile {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .treatment-animate {
+    animation: fadeInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .treatment-card-animate {
+    animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .treatment-content-animate {
+    animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .smooth-hover {
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .smooth-hover:hover {
+    transform: translateY(-3px);
+  }
+  .card-smooth {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .card-smooth:hover {
+    transform: translateY(-5px) scale(1.01);
+  }
+  .text-smooth {
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .button-smooth {
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .button-smooth:hover {
+    transform: translateY(-1px);
+  }
+  
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .treatment-animate {
+      animation: fadeInUpMobile 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .treatment-card-animate {
+      animation: fadeInUpMobile 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .treatment-content-animate {
+      animation: fadeInUpMobile 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .smooth-hover:hover {
+      transform: translateY(-2px);
+    }
+    .card-smooth:hover {
+      transform: translateY(-3px) scale(1.005);
+    }
+    .button-smooth:hover {
+      transform: translateY(-1px);
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .treatment-animate, .treatment-card-animate, .treatment-content-animate {
+      animation: none;
+    }
+    .smooth-hover:hover, .card-smooth:hover, .button-smooth:hover {
+      transform: none;
+    }
+  }
+  
+  /* Touch device optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    .card-smooth:hover {
+      transform: none;
+    }
+    .smooth-hover:hover {
+      transform: none;
+    }
+    .button-smooth:hover {
+      transform: none;
+    }
+  }
+`;
+
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = treatmentStyle;
+  document.head.appendChild(styleSheet);
+}
 
 function Treatment() {
   const [currentCard, setCurrentCard] = useState(0);
@@ -21,7 +109,7 @@ function Treatment() {
 
   const treatmentData = [
     {
-      image: "https://i.pinimg.com/736x/ef/d6/66/efd6668b3bc8f2d76e22464c5e5386ff.jpg",
+      image: "https://www.acesportsclinic.com.au/wp-content/uploads/2022/06/Untitled-21.jpg",
       title: "ઘૂંટણનો દુખાવો",
       description: "ઘૂંટણના દુખાવા માટે વ્યાપક ફિઝિયોથેરાપી ટ્રીટમેન્ટ્સ જે મોબિલિટી પુનઃસ્થાપિત કરવા, દુખાવો ઘટાડવા અને એકંદર કાર્યમાં સુધારો કરવા માટે ડિઝાઇન કરેલા છે. અમારા નિષ્ણાત થેરાપિસ્ટ્સ ઇવિડન્સ-બેઝ્ડ તકનીકોનો ઉપયોગ કરે છે જેથી તમે ઝડપથી પુનઃપ્રાપ્તિ કરી શકો અને ભવિષ્યના ઇજાઓને રોકી શકો.",
       features: [
@@ -30,7 +118,6 @@ function Treatment() {
         "દુખાવો વ્યવસ્થાપન",
         "ઇજા નિવારણ"
       ],
-      
       gradient: "from-orange-400 to-red-500"
     },
     {
@@ -43,7 +130,6 @@ function Treatment() {
         "પેઈન રિલિફ ટેકનિક્સ",
         "પ્રિવેન્ટિવ કેર"
       ],
-      
       gradient: "from-blue-400 to-cyan-500"
     },
     {
@@ -56,67 +142,58 @@ function Treatment() {
         "મેન્યુઅલ થેરાપી",
         "પોસ્ચર ટ્રેનિંગ"
       ],
-      
       gradient: "from-purple-400 to-pink-500"
     }
   ];
 
-  // Modern card variants
+  // Mobile-optimized card variants
   const cardVariants = {
     hidden: { 
       opacity: 0, 
-      y: 100, 
-      scale: 0.8,
-      rotateX: 15
+      y: 20
     },
     visible: {
       opacity: 1,
       y: 0,
-      scale: 1,
-      rotateX: 0,
       transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 20,
-        duration: 0.8
+        duration: 0.5,
+        ease: [0.25, 0.46, 0.45, 0.94]
       }
     },
     hover: {
-      y: -10,
-      scale: 1.02,
+      y: -5,
+      scale: 1.01,
       transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 20
-      }
-    }
-  };
-
-  // Content animation variants
-  const contentVariants = {
-    hidden: { 
-      opacity: 0, 
-      x: 50,
-      filter: "blur(10px)"
-    },
-    visible: {
-      opacity: 1,
-      x: 0,
-      filter: "blur(0px)",
-      transition: {
-        duration: 0.8,
+        duration: 0.2,
         ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
   };
 
-  // Feature list animation
+  // Mobile-optimized content variants
+  const contentVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
+  };
+
+  // Mobile-optimized feature variants
   const featureVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.05,
+        delayChildren: 0.1
       }
     }
   };
@@ -124,124 +201,20 @@ function Treatment() {
   const featureItemVariants = {
     hidden: { 
       opacity: 0, 
-      x: -20,
-      scale: 0.8
+      y: 8
     },
     visible: {
       opacity: 1,
-      x: 0,
-      scale: 1,
+      y: 0,
       transition: {
-        type: "spring",
-        stiffness: 200,
-        damping: 20
+        duration: 0.3,
+        ease: [0.25, 0.46, 0.45, 0.94]
       }
     }
   };
 
-  useEffect(() => {
-    // Modern GSAP animations
-    gsap.fromTo(titleRef.current, 
-      { 
-        y: -100, 
-        opacity: 0,
-        scale: 0.8,
-        filter: "blur(20px)"
-      },
-      { 
-        y: 0, 
-        opacity: 1, 
-        scale: 1,
-        filter: "blur(0px)",
-        duration: 1.2, 
-        ease: "back.out(1.7)",
-        delay: 0.3
-      }
-    );
-
-    // Enhanced ScrollTrigger animations
-    treatmentData.forEach((_, index) => {
-      const card = cardsRef.current[index];
-      const content = contentRef.current[index];
-      
-      if (card && content) {
-        // Card animation with modern effects
-        gsap.fromTo(card,
-          { 
-            y: 150, 
-            opacity: 0,
-            rotationY: index % 2 === 0 ? -15 : 15,
-            scale: 0.7,
-            filter: "blur(10px)"
-          },
-          {
-            y: 0,
-            opacity: 1,
-            rotationY: 0,
-            scale: 1,
-            filter: "blur(0px)",
-            duration: 1.4,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              end: "bottom 15%",
-              toggleActions: "play none none reverse"
-            }
-          }
-        );
-
-        // Content animation with stagger
-        gsap.fromTo(content,
-          { 
-            x: index % 2 === 0 ? 100 : -100, 
-            opacity: 0,
-            y: 30,
-            filter: "blur(15px)"
-          },
-          {
-            x: 0,
-            opacity: 1,
-            y: 0,
-            filter: "blur(0px)",
-            duration: 1.2,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: content,
-              start: "top 85%",
-              end: "bottom 15%",
-              toggleActions: "play none none reverse"
-            }
-          }
-        );
-      }
-    });
-
-    // Smooth scroll behavior
-    gsap.to("html, body", {
-      scrollBehavior: "smooth",
-      duration: 0.1
-    });
-
-    // Enhanced parallax effect
-    gsap.to(".parallax-bg", {
-      yPercent: -30,
-      ease: "none",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1
-      }
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, [treatmentData.length]);
-
   return (
-    <div ref={containerRef} className='w-full min-h-[280vh] bg-gradient-to-br from-slate-900 via-black to-slate-900 relative overflow-hidden'>
+    <div ref={containerRef} className='w-full min-h-[280vh] bg-gradient-to-br from-slate-900 via-black to-slate-900 relative overflow-hidden treatment-animate'>
       {/* Modern animated background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
@@ -249,9 +222,9 @@ function Treatment() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(236,72,153,0.1),transparent_50%)]"></div>
       </div>
 
-      {/* Animated particles */}
-      <div className="absolute inset-0 opacity-30 parallax-bg">
-        {[...Array(20)].map((_, i) => (
+      {/* Reduced particles for mobile performance */}
+      <div className="absolute inset-0 opacity-20 parallax-bg">
+        {[...Array(10)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full"
@@ -260,11 +233,11 @@ function Treatment() {
               top: `${Math.random() * 100}%`,
             }}
             animate={{
-              y: [0, -100, 0],
+              y: [0, -50, 0],
               opacity: [0, 1, 0],
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: 4 + Math.random() * 2,
               repeat: Infinity,
               delay: Math.random() * 2,
             }}
@@ -275,87 +248,85 @@ function Treatment() {
       {/* Modern title with gradient and animation */}
       <motion.div 
         ref={titleRef}
-        className="relative z-10 text-center pt-20 pb-16"
-        initial={{ opacity: 0, y: -50 }}
+        className="relative z-10 text-center pt-16 sm:pt-20 pb-12 sm:pb-16 treatment-animate"
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, ease: "easeOut" }}
+        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <div className="container mx-auto px-4">
           <motion.h1 
-            className="text-5xl md:text-7xl font-bold mb-4"
-            initial={{ opacity: 0, scale: 0.8 }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4"
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
+            transition={{ delay: 0.2, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-600 bg-clip-text text-transparent">
               ઉપલબ્ધ
             </span>
-            <span className="text-white ml-4">ઉપચારો</span>
+            <span className="text-white ml-2 sm:ml-4">ઉપચારો</span>
           </motion.h1>
           <motion.div 
-            className="w-32 h-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mx-auto"
+            className="w-24 sm:w-32 h-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mx-auto"
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ delay: 1, duration: 0.8 }}
+            transition={{ delay: 0.4, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           />
         </div>
       </motion.div>
 
       {/* Main Content Container */}
-      <div className="container mx-auto px-4 pb-20">
+      <div className="container mx-auto px-4 pb-16 sm:pb-20">
         {treatmentData.map((treatment, index) => (
-          <div key={index} className="mb-32">
-            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center min-h-screen ${
+          <div key={index} className="mb-20 sm:mb-32 ">
+            <div className={`grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16  items-center min-h-screen ${
               index % 2 === 1 ? 'lg:grid-flow-col-dense' : ''
             }`}>
               
               {/* Card Section */}
               <motion.div 
                 ref={el => cardsRef.current[index] = el}
-                className={`relative ${index % 2 === 1 ? 'lg:col-start-2' : ''}`}
+                className={`relative ${index % 2 === 1 ? 'lg:col-start-2' : ''} treatment-card-animate`}
                 variants={cardVariants}
                 initial="hidden"
                 whileInView="visible"
                 whileHover="hover"
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: true, margin: "-30px" }}
                 onHoverStart={() => setIsHovered(index)}
                 onHoverEnd={() => setIsHovered(null)}
               >
-                <div className="relative group cursor-pointer">
+                <div className="relative group cursor-pointer card-smooth">
                   {/* Modern card with glassmorphism */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-3xl border border-white/20"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-white/20"></div>
                   
                   {/* Image container */}
-                  <div className="relative overflow-hidden rounded-3xl">
+                  <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl">
                     <motion.img
                       src={treatment.image}
                       alt={treatment.title}
-                      className="w-full h-[500px] object-cover"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.6, ease: "easeOut" }}
+                      className="w-full h-[300px] sm:h-[400px] lg:h-[500px] object-cover"
+                      whileHover={{ scale: 1.02 }}
+                      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                     />
                     
                     {/* Gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                    
-                    
         </div>
 
                   {/* Card content overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-8">
+                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
                     <motion.h3 
-                      className="text-3xl font-bold text-white mb-3"
-                      initial={{ opacity: 0, y: 20 }}
+                      className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3"
+                      initial={{ opacity: 0, y: 15 }}
                       whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
+                      transition={{ delay: 0.1, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                     >
                       {treatment.title}
                     </motion.h3>
                     <motion.div 
-                      className={`w-24 h-1 bg-gradient-to-r ${treatment.gradient} rounded-full`}
+                      className={`w-16 sm:w-24 h-1 bg-gradient-to-r ${treatment.gradient} rounded-full`}
                       initial={{ scaleX: 0 }}
                       whileInView={{ scaleX: 1 }}
-                      transition={{ delay: 0.4, duration: 0.6 }}
+                      transition={{ delay: 0.3, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                     />
           </div>
 
@@ -363,11 +334,11 @@ function Treatment() {
                   <AnimatePresence>
                     {isHovered === index && (
                       <motion.div
-                        className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/20 to-purple-500/20"
+                        className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-500/20 to-purple-500/20"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
                       />
                     )}
                   </AnimatePresence>
@@ -377,51 +348,52 @@ function Treatment() {
               {/* Content Section */}
               <motion.div 
                 ref={el => contentRef.current[index] = el}
-                className={`space-y-8 ${index % 2 === 1 ? 'lg:col-start-1' : ''}`}
+                className={`space-y-6 sm:space-y-8 ${index % 2 === 1 ? 'lg:col-start-1' : ''} treatment-content-animate`}
                 variants={contentVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
+                viewport={{ once: true, margin: "-30px" }}
               >
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
               <motion.h2 
-                    className={`text-4xl font-bold mb-6 bg-gradient-to-r ${treatment.gradient} bg-clip-text text-transparent`}
-                initial={{ opacity: 0, y: 20 }}
+                    className={`text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 bg-gradient-to-r ${treatment.gradient} bg-clip-text text-transparent text-smooth`}
+                    initial={{ opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.1, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                     {treatment.title}
               </motion.h2>
               
               <motion.p 
-                    className="text-xl text-gray-300 leading-relaxed"
-                initial={{ opacity: 0, y: 20 }}
+                    className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed text-smooth"
+                    initial={{ opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                    transition={{ delay: 0.3, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                     {treatment.description}
               </motion.p>
 
               <motion.div 
-                    className="space-y-6"
+                    className="space-y-4 sm:space-y-6"
                     variants={featureVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
                   >
-                    <h4 className="text-2xl font-semibold text-white mb-6">મુખ્ય લક્ષણો:</h4>
-                    <ul className="space-y-4">
+                    <h4 className="text-lg sm:text-xl lg:text-2xl font-semibold text-white mb-4 sm:mb-6">મુખ્ય લક્ષણો:</h4>
+                    <ul className="space-y-3 sm:space-y-4">
                       {treatment.features.map((feature, featureIndex) => (
                     <motion.li
                       key={featureIndex}
-                          className="flex items-center text-gray-300 text-lg group"
+                          className="flex items-center text-gray-300 text-sm sm:text-base lg:text-lg group smooth-hover"
                           variants={featureItemVariants}
                         >
                           <motion.div 
-                            className={`w-3 h-3 bg-gradient-to-r ${treatment.gradient} rounded-full mr-4 group-hover:scale-125 transition-transform`}
-                            whileHover={{ scale: 1.2 }}
+                            className={`w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r ${treatment.gradient} rounded-full mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-200`}
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
                           />
-                          <span className="group-hover:text-white transition-colors">{feature}</span>
+                          <span className="group-hover:text-white transition-colors duration-200">{feature}</span>
                     </motion.li>
                   ))}
                 </ul>
@@ -429,12 +401,12 @@ function Treatment() {
 
                   {/* Modern CTA button */}
                   <motion.button
-                    className={`mt-8 px-8 py-4 bg-gradient-to-r ${treatment.gradient} text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105`}
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0, y: 20 }}
+                    className={`mt-6 sm:mt-8 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r ${treatment.gradient} text-white font-semibold rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl button-smooth text-sm sm:text-base`}
+                    whileHover={{ y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    initial={{ opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8 }}
+                    transition={{ delay: 0.6, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
                   >
                     વધુ જાણો
                   </motion.button>
