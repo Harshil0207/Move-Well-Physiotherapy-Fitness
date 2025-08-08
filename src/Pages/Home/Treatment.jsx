@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, AnimatePresence } from 'framer-motion';
 
 // Add CSS for smooth, light animations optimized for mobile
 const treatmentStyle = `
@@ -146,73 +146,6 @@ function Treatment() {
     }
   ];
 
-  // Mobile-optimized card variants
-  const cardVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 20
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    },
-    hover: {
-      y: -5,
-      scale: 1.01,
-      transition: {
-        duration: 0.2,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  };
-
-  // Mobile-optimized content variants
-  const contentVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 20
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  };
-
-  // Mobile-optimized feature variants
-  const featureVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-        delayChildren: 0.1
-      }
-    }
-  };
-
-  const featureItemVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 8
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  };
-
   return (
     <div ref={containerRef} className='w-full min-h-[280vh] bg-gradient-to-br from-slate-900 via-black to-slate-900 relative overflow-hidden treatment-animate'>
       {/* Modern animated background */}
@@ -249,16 +182,10 @@ function Treatment() {
       <motion.div 
         ref={titleRef}
         className="relative z-10 text-center pt-16 sm:pt-20 pb-12 sm:pb-16 treatment-animate"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <div className="container mx-auto px-4">
           <motion.h1 
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-600 bg-clip-text text-transparent">
               ઉપલબ્ધ
@@ -267,9 +194,6 @@ function Treatment() {
           </motion.h1>
           <motion.div 
             className="w-24 sm:w-32 h-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mx-auto"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ delay: 0.4, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
           />
         </div>
       </motion.div>
@@ -286,11 +210,6 @@ function Treatment() {
               <motion.div 
                 ref={el => cardsRef.current[index] = el}
                 className={`relative ${index % 2 === 1 ? 'lg:col-start-2' : ''} treatment-card-animate`}
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                whileHover="hover"
-                viewport={{ once: true, margin: "-30px" }}
                 onHoverStart={() => setIsHovered(index)}
                 onHoverEnd={() => setIsHovered(null)}
               >
@@ -304,41 +223,29 @@ function Treatment() {
                       src={treatment.image}
                       alt={treatment.title}
                       className="w-full h-[300px] sm:h-[400px] lg:h-[500px] object-cover"
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                     />
                     
                     {/* Gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-        </div>
+                  </div>
 
                   {/* Card content overlay */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-8">
                     <motion.h3 
                       className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3"
-                      initial={{ opacity: 0, y: 15 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                     >
                       {treatment.title}
                     </motion.h3>
                     <motion.div 
                       className={`w-16 sm:w-24 h-1 bg-gradient-to-r ${treatment.gradient} rounded-full`}
-                      initial={{ scaleX: 0 }}
-                      whileInView={{ scaleX: 1 }}
-                      transition={{ delay: 0.3, duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
                     />
-          </div>
+                  </div>
 
                   {/* Hover effect glow */}
                   <AnimatePresence>
                     {isHovered === index && (
                       <motion.div
                         className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-500/20 to-purple-500/20"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
                       />
                     )}
                   </AnimatePresence>
@@ -349,71 +256,49 @@ function Treatment() {
               <motion.div 
                 ref={el => contentRef.current[index] = el}
                 className={`space-y-6 sm:space-y-8 ${index % 2 === 1 ? 'lg:col-start-1' : ''} treatment-content-animate`}
-                variants={contentVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-30px" }}
               >
                 <div className="space-y-4 sm:space-y-6">
-              <motion.h2 
+                  <motion.h2 
                     className={`text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 bg-gradient-to-r ${treatment.gradient} bg-clip-text text-transparent text-smooth`}
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-              >
+                  >
                     {treatment.title}
-              </motion.h2>
-              
-              <motion.p 
+                  </motion.h2>
+                  
+                  <motion.p 
                     className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed text-smooth"
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-              >
+                  >
                     {treatment.description}
-              </motion.p>
+                  </motion.p>
 
-              <motion.div 
+                  <motion.div 
                     className="space-y-4 sm:space-y-6"
-                    variants={featureVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
                   >
                     <h4 className="text-lg sm:text-xl lg:text-2xl font-semibold text-white mb-4 sm:mb-6">મુખ્ય લક્ષણો:</h4>
                     <ul className="space-y-3 sm:space-y-4">
                       {treatment.features.map((feature, featureIndex) => (
-                    <motion.li
-                      key={featureIndex}
+                        <motion.li
+                          key={featureIndex}
                           className="flex items-center text-gray-300 text-sm sm:text-base lg:text-lg group smooth-hover"
-                          variants={featureItemVariants}
                         >
                           <motion.div 
                             className={`w-2 h-2 sm:w-3 sm:h-3 bg-gradient-to-r ${treatment.gradient} rounded-full mr-3 sm:mr-4 group-hover:scale-110 transition-transform duration-200`}
-                            whileHover={{ scale: 1.1 }}
-                            transition={{ duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
                           />
                           <span className="group-hover:text-white transition-colors duration-200">{feature}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </motion.div>
 
                   {/* Modern CTA button */}
                   <motion.button
                     className={`mt-6 sm:mt-8 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r ${treatment.gradient} text-white font-semibold rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl button-smooth text-sm sm:text-base`}
-                    whileHover={{ y: -1 }}
-                    whileTap={{ scale: 0.98 }}
-                    initial={{ opacity: 0, y: 15 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
                   >
                     વધુ જાણો
                   </motion.button>
                 </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
-        </div>
         ))}
       </div>
     </div>
